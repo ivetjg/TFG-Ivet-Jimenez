@@ -3,7 +3,7 @@
 clear; clc; close all;
 
 %% CALIBRATGE: mesura la barra d'escala
-img = imread('200_high_cant2.jpg'); % canviar per cada imatge
+img = imread('200_high_cant2.jpg'); 
 imshow(img);
 title('Clica l''INICI i el FINAL de la barra d''escala 1mm', 'Color','w');
 
@@ -12,7 +12,7 @@ scale_px_per_mm = abs(x_bar(2) - x_bar(1));
 fprintf('Escala: %.1f px/mm\n', scale_px_per_mm);
 
 %% ---- PARÀMETRES ----------------------------------------
-nom_fitxer      = '250_ctrl_cant2.jpg';
+nom_fitxer      = '250_ctrl_cant2.jpg'; % canviar per cada imatge
 scale_px_per_mm = 160;
 N_ARC           = 8;   % punts a clicar sobre l'arc (7-10 recomanat)
 
