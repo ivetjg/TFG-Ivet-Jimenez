@@ -3,7 +3,7 @@
 clear; clc; close all;
 
 
-%% Load the three replicates
+%% Carregar fitxers 
 
 ctrl_r1 = readtable('10_GelMA_R1.csv');
 ctrl_r2 = readtable('10_GelMA_R2.csv');
@@ -19,7 +19,7 @@ pva_7_5_r2 = readtable('7_5_PVA_10_GelMA_R2.csv');
 
 
 
-%% Process groups
+%% Processar grups
 [T_ctrl,    eta_ctrl]    = process_group(ctrl_r1,     ctrl_r2);
 [T_2_5,     eta_2_5]     = process_group(pva_2_5_r1,  pva_2_5_r2);
 [T_5,       eta_5]       = process_group(pva_5_r1,    pva_5_r2);
@@ -62,7 +62,7 @@ box on;
 set(gca, 'FontSize', 11);
  
 
-%% Interpolate, average, sort, filter < 25°C
+%% Interpolar i filtrar soroll < 25°C
 function [T, eta] = process_group(r1, r2)
     T_ref = r1.Temperature;
     eta1  = r1.Complex_Viscosity;
