@@ -1,5 +1,4 @@
 % BAR PLOT - Normalized square area vs UV exposure time
-% Llegeix directament el CSV de resultats normalitzats
 clear; clc; close all;
 
 %% LLEGIR CSV NORMALITZAT
