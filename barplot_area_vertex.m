@@ -1,8 +1,10 @@
 % BAR PLOT - Vertex area vs UV exposure time
 clear; clc; close all;
+
 %% LLEGIR CSV
 T = readtable(fullfile('resultats.csv'));
 T.Properties.VariableNames = {'fitxer', 'area_mm2', 'R_eq_mm'};
+
 %% EXTREURE TEMPS, CONCENTRACIO I AREA
 n = height(T);
 temps_vec = zeros(n,1);
@@ -19,12 +21,14 @@ elseif contains(nom,'low'),  conc_vec(i) = 3;
 end
 end
 area_vec = T.area_mm2;
+
 %% DESCARTAR TEMPS = 100s
 mask_100  = temps_vec == 100;
 temps_vec = temps_vec(~mask_100);
 conc_vec  = conc_vec(~mask_100);
 area_vec  = area_vec(~mask_100);
 T         = T(~mask_100, :);   % Filtrar també la taula per al CSV de sortida
+
 %% CALCULAR MITJANA I SD PER CADA GRUP
 temps_unics  = sort(unique(temps_vec(temps_vec > 0)));
 temps_labels = arrayfun(@num2str, temps_unics, 'UniformOutput', false);
@@ -34,6 +38,7 @@ n_t = length(temps_unics);
 n_c = length(conc_unics);
 mat_mitjana = NaN(n_t, n_c);
 mat_sd      = NaN(n_t, n_c);
+
 % Càlcul SD
 for ti = 1:n_t
 for ci = 1:n_c
@@ -45,6 +50,7 @@ if ~isempty(vals)
 end
 end
 end
+
 %% PARAMETRES DE LA GRAFICA
 colors  = [0.45 0.45 0.45;   % gris mig  -> Control
            0.20 0.20 0.20;   % negre     -> High
@@ -53,6 +59,7 @@ bw      = 0.25;
 offsets = [-bw, 0, bw];
 y_baix = [0,   1.0];   % rang inferior (tall d'eix)
 y_dalt = [2.5, 7.5];  % rang superior (tall d'eix)
+
 %% FIGURA AMB TALL D'EIX Y (broken axis)
 fig = figure('Color','white','Position',[100 80 700 580]);
 ax_b = subplot('Position',[0.13 0.10 0.83 0.52]);   % panel inferior
@@ -66,13 +73,15 @@ for ci = 1:n_c
         ti_valids = find(~isnan(mat_mitjana(:,ci)));
         xpos = ti_valids + offsets(ci);
         mij  = mat_mitjana(ti_valids, ci);
-        sd   = mat_sd(ti_valids, ci);
+        sd   = mat_sd(ti_valids, ci);    
+        
 % Barres
         h(ci) = bar(ax, xpos, mij, bw*0.9, ...
 'FaceColor', colors(ci,:), ...
 'EdgeColor', colors(ci,:)*0.3, ...
 'LineWidth', 0.7, ...
 'DisplayName', conc_labels{ci});
+
 % Barres d'error (SD)
         errorbar(ax, xpos, mij, sd, ...
 'LineStyle','none', ...
@@ -97,5 +106,6 @@ else
 end
     hold(ax, 'off');
 end
+
 %% GUARDAR
 exportgraphics(fig, fullfile('barplot_area_vertex.png'), 'Resolution', 300);
