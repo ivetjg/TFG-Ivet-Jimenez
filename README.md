@@ -1,12 +1,11 @@
 # TFG — Desenvolupament i Optimització d'un Model Vascular Tubular Bioimprès en 3D amb GelMA
-Autora: Ivet Jiménez González
-Grau: Enginyeria Biomèdica
-Institució: Universitat de Girona
-Col·laboració: Eurecat / TargetsLab
+- Autora: Ivet Jiménez González
+- Grau: Enginyeria Biomèdica
+- Institució: Universitat de Girona
+- Col·laboració: Eurecat / TargetsLab
 
 # Descripció
-Aquest repositori conté tots els codis desenvolupats i utilitzats durant el Treball de Final de Grau. Els scripts cobreixen dues àrees principals:
-Tots els scripts estan escrits en MATLAB i requereixen accés als fitxers de dades corresponents (imatges .jpg i taules .csv) per poder executar-se correctament.
+Aquest repositori conté tots els codis desenvolupats i utilitzats durant el Treball de Final de Grau sobre el Desenvolupament i Optimització d’un model vascular tubular bioimprès en 3D amb GelMA. Tots els scripts estan escrits en MATLAB i requereixen accés als fitxers de dades corresponents (imatges .jpg i taules .csv) per poder executar-se correctament.
 
 # Contingut
 * area_quadrat.m: Mesura del costat del quadrat reticulat
