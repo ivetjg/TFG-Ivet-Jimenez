@@ -5,7 +5,7 @@
 - Col·laboració: Eurecat / TargetsLab
 
 # Descripció
-Aquest repositori conté tots els codis desenvolupats i utilitzats durant el Treball de Final de Grau sobre el Desenvolupament i Optimització d’un model vascular tubular bioimprès en 3D amb GelMA. Tots els scripts estan escrits en MATLAB i requereixen accés als fitxers de dades corresponents (imatges .jpg i taules .csv) per poder executar-se correctament.
+Aquest repositori conté tots els codis desenvolupats i utilitzats durant el Treball de Final de Grau sobre el Desenvolupament i Optimització d’un model vascular tubular bioimprès en 3D amb GelMA. Conté els anàlisi quantificatiu de les imatge de quadrats de biotinta, la representació gràfica de les dades reològiques i el G-Code usat per a la bioimpressió.Tots els scripts estan escrits en MATLAB i requereixen accés als fitxers de dades corresponents (imatges .jpg i taules .csv) per poder executar-se correctament.
 
 # Contingut
 * area_quadrat.m: Mesura del costat del quadrat reticulat
