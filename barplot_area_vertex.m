@@ -1,43 +1,35 @@
-%% ANÀLISI DEL VÈRTEX — Processament de múltiples rèpliques
-% Per a cada fitxer de la llista, l'usuari clica els punts de les vores
-% rectes i de l'arc de la cantonada. L'àrea real del vèrtex es calcula
-% per polígon (mètode Shoelace) i els resultats s'afegeixen a un CSV acumulatiu.
-
+%% ANÀLISI DEL VÈRTEX 
 clear; clc; close all;
 
-%% ---- PARÀMETRES ----------------------------------------
+%% Carregar imatges
 fitxers = {
     '250_ctrl_cant1.jpg',
     '250_ctrl_cant2.jpg',
     '250_ctrl_cant3.jpg',
     '250_ctrl_cant4.jpg',
 };
-% Modifica la llista anterior amb els noms reals dels teus fitxers.
-% Pots afegir o treure línies segons les rèpliques que tinguis.
 
 scale_px_per_mm = 160;
 N_ARC           = 8;     % punts a clicar sobre l'arc (7–10 recomanat)
 csv_file        = 'resultats_vertex.csv';
 
-%% ---- INICIALITZAR CSV si no existeix ----------------------
+%% Crear CSV si no existeix 
 if ~isfile(csv_file)
     fid = fopen(csv_file, 'w');
     fprintf(fid, 'fitxer,area_mm2,R_eq_mm\r\n');
     fclose(fid);
 end
 
-%% ---- BUCLE PER CADA FITXER --------------------------------
+%% Bucle per cada fitxer 
 for k = 1:length(fitxers)
 
     nom_fitxer = fitxers{k};
 
     fprintf('\n[%d/%d] Processant: %s\n', k, length(fitxers), nom_fitxer);
 
-    %% 1. CARREGAR IMATGE
     img = imread(nom_fitxer);
     [nrows, ncols, ~] = size(img);
 
-    %% 2. FIGURA INTERACTIVA
     fig = figure('Name', sprintf('Selecció de punts - %s', nom_fitxer), ...
                  'NumberTitle', 'off', 'Color', 'k');
     imshow(img); hold on;
@@ -48,9 +40,6 @@ for k = 1:length(fitxers)
                'FontSize', 9, 'EdgeColor', 'none', 'FitBoxToText', 'on');
     pause(0.5);
 
-    %% 3. CLICAR PUNTS
-
-    % PAS 1: costat horitzontal
     [xh, yh] = clicar_punts(fig, 5, 'cyan', 'o', ...
         'PAS 1/3 — COSTAT HORITZONTAL', ...
         'Clica 5 punts sobre la vora recta SUPERIOR (lluny de la cantonada)');
@@ -59,7 +48,6 @@ for k = 1:length(fitxers)
     plot(x_lin, polyval(ph, x_lin), 'c--', 'LineWidth', 1.5);
     drawnow;
 
-    % PAS 2: costat vertical
     [xv, yv] = clicar_punts(fig, 5, 'magenta', 'o', ...
         'PAS 2/3 — COSTAT VERTICAL', ...
         'Clica 5 punts sobre la vora recta ESQUERRA (lluny de la cantonada)');
@@ -68,12 +56,10 @@ for k = 1:length(fitxers)
     plot(polyval(pv, y_lin), y_lin, 'm--', 'LineWidth', 1.5);
     drawnow;
 
-    % PAS 3: arc de la cantonada
     msg_arc = sprintf('Clica %d punts sobre l''ARC (esquerra→dreta, repartits uniformement)', N_ARC);
     [xa, ya] = clicar_punts(fig, N_ARC, 'yellow', 'o', ...
         'PAS 3/3 — ARC DE LA CANTONADA', msg_arc);
 
-    % Spline visual de l'arc clicat
     if N_ARC >= 4
         t_sp  = 1:N_ARC;
         t_fin = linspace(1, N_ARC, 200);
@@ -83,14 +69,12 @@ for k = 1:length(fitxers)
         drawnow;
     end
 
-    %% 4. INTERSECCIÓ DE LES DUES TANGENTS (vèrtex ideal)
     a_h = ph(1); b_h = ph(2);   % y = a_h*x + b_h
     a_v = pv(1); b_v = pv(2);   % x = a_v*y + b_v
 
     x_int = (a_v*b_h + b_v) / (1 - a_v*a_h);
     y_int = a_h*x_int + b_h;
 
-    %% 5. TROBAR ELS PUNTS DE TALL TANGENT ↔ ARC
     if N_ARC >= 4
         t_sp   = 1:N_ARC;
         t_fin  = linspace(1, N_ARC, 2000);
@@ -119,7 +103,6 @@ for k = 1:length(fitxers)
         arc_y = fliplr(ya_den(idx_tv:idx_th));
     end
 
-    %% 6. CALCULAR ÀREA AMB SHOELACE
     poly_x = [x_int; x_tall_h; arc_x(:); x_tall_v; x_int];
     poly_y = [y_int; y_tall_h; arc_y(:); y_tall_v; y_int];
 
@@ -130,7 +113,6 @@ for k = 1:length(fitxers)
     R_eq    = sqrt(area_px2 / (1 - pi/4));
     R_eq_mm = R_eq / scale_px_per_mm;
 
-    %% 7. DIBUIXAR RESULTAT FINAL
     marge = 300;
     x_rng = linspace(x_int - marge, x_int + marge*0.3, 200);
     y_rng = linspace(y_int - marge, y_int + marge*0.3, 200);
@@ -161,7 +143,6 @@ for k = 1:length(fitxers)
     exportgraphics(fig, nom_sortida, 'Resolution', 150);
     fprintf('Figura guardada: %s\n', nom_sortida);
 
-    %% 9. GUARDAR AL CSV
     fid = fopen(csv_file, 'a');
     fprintf(fid, '%s,%.8f,%.6f\r\n', nom_fitxer, area_mm2, R_eq_mm);
     fclose(fid);
