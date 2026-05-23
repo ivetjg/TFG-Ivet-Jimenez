@@ -3,7 +3,7 @@
 % Plot Storage Modulus vs Temperature
 clear; clc; close all;
 
-%% Load the three replicates
+%% Carregar fitxers 
 r1_7 = readtable('7.5%_R1_data.csv');
 r2_7 = readtable('7.5%_R2_data.csv');
 
@@ -13,7 +13,7 @@ r2_10 = readtable('10%_R3_data.csv');
 r1_12 = readtable('12.5%_R1_data.csv');
 r2_12 = readtable('12.5%_R1_data.csv');
 
-%% Interpolate onto temperature axis
+%% Interpolar sobre l'eix de temperatura
 
 T_ref7 = r1_7.Temperature;
 eta7 = r1_7.Complex_Viscosity;
