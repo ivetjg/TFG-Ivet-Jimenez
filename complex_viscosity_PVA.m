@@ -1,77 +1,79 @@
 
 
+% Plot Storage Modulus vs Temperature
 clear; clc; close all;
 
+%% Load the three replicates
+r1_7 = readtable('7.5%_R1_data.csv');
+r2_7 = readtable('7.5%_R2_data.csv');
 
-%% Carregar fitxers 
+r1_10 = readtable('10%_R2_data.csv');
+r2_10 = readtable('10%_R3_data.csv');
 
-ctrl_r1 = readtable('10_GelMA_R1.csv');
-ctrl_r2 = readtable('10_GelMA_R2.csv');
+r1_12 = readtable('12.5%_R1_data.csv');
+r2_12 = readtable('12.5%_R1_data.csv');
 
-pva_2_5_r1 = readtable('2_5_PVA_10_GelMA_R1.csv');
-pva_2_5_r2 = readtable('2_5_PVA_10_GelMA_R2.csv');
+%% Interpolate onto temperature axis
 
-pva_5_r1 = readtable('5_PVA_10_GelMA_R1.csv');
-pva_5_r2 = readtable('5_PVA_10_GelMA_R2.csv');
+T_ref7 = r1_7.Temperature;
+eta7 = r1_7.Complex_Viscosity;
+eta7_2 = interp1(r2_7.Temperature, r2_7.Complex_Viscosity, T_ref7, 'linear', NaN);
+eta_mean7  = mean([eta7,  eta7_2],   2, 'omitnan');
 
-pva_7_5_r1 = readtable('7_5_PVA_10_GelMA_R1.csv');
-pva_7_5_r2 = readtable('7_5_PVA_10_GelMA_R2.csv');
+T_ref10 = r1_10.Temperature;
+eta10 = r1_10.Complex_Viscosity;
+eta10_2 = interp1(r2_10.Temperature, r2_10.Complex_Viscosity, T_ref10, 'linear', NaN);
+eta_mean10  = mean([eta10,  eta10_2],   2, 'omitnan');
+
+T_ref12 = r1_12.Temperature;
+eta12 = r1_12.Complex_Viscosity;
+eta12_2 = interp1(r2_12.Temperature, r2_12.Complex_Viscosity, T_ref12, 'linear', NaN);
+eta_mean12  = mean([eta12,  eta12_2],   2, 'omitnan');
+
+%% Ordenar per temperatura i filtrar soroll (< 25ºC)
+
+data_mean_7 = [T_ref7, eta_mean7];
+data_mean_7 = sortrows(data_mean_7, 1);
+data_mean_7 = data_mean_7(data_mean_7(:,1) < 25, :);
+Temperature_7= data_mean_7(:,1);
+Complex_Viscosity_7 = data_mean_7(:,2);
+
+data_mean_10 = [T_ref10, eta_mean10];
+data_mean_10 = sortrows(data_mean_10, 1);
+data_mean_10 = data_mean_10(data_mean_10(:,1) < 25, :);
+Temperature_10       = data_mean_10(:,1);
+Complex_Viscosity_10 = data_mean_10(:,2);
+
+data_mean_12 = [T_ref12, eta_mean12];
+data_mean_12 = sortrows(data_mean_12, 1);
+data_mean_12 = data_mean_12(data_mean_12(:,1) < 25, :);
+Temperature_12      = data_mean_12(:,1);
+Complex_Viscosity_12 = data_mean_12(:,2);
 
 
-
-%% Processar grups
-[T_ctrl,    eta_ctrl]    = process_group(ctrl_r1,     ctrl_r2);
-[T_2_5,     eta_2_5]     = process_group(pva_2_5_r1,  pva_2_5_r2);
-[T_5,       eta_5]       = process_group(pva_5_r1,    pva_5_r2);
-[T_7_5,     eta_7_5]     = process_group(pva_7_5_r1,  pva_7_5_r2);
- 
-%% Plot
+%% Plot Complex viscosity
 figure('Name', 'Complex Viscosity vs Temperature', ...
        'Color', 'white', 'Position', [100, 100, 800, 500]);
- 
-colors = [
-    0.00, 0.00, 0.00;   % ctrl     - negre
-    0.40, 0.40, 0.40;   % 2.5%     - gris fosc
-    0.60, 0.60, 0.60;   % 5%       - gris mig
-    0.80, 0.80, 0.80;   % 7.5%     - gris clar
-];
- 
-groups = {T_ctrl, eta_ctrl, '10% GelMA (ctrl)'; ...
-          T_2_5,  eta_2_5,  '2.5% PVA'; ...
-          T_5,    eta_5,    '5% PVA'; ...
-          T_7_5,  eta_7_5,  '7.5% PVA'};
- 
+
+plot(Temperature_7, Complex_Viscosity_7, 'k-o', 'LineWidth', 1.5, ...
+     'MarkerSize', 4, 'MarkerFaceColor', 'k', 'DisplayName', '|\eta*| GelMA a 7.5%');
+
 hold on;
-for i = 1:size(groups, 1)
-    plot(groups{i,1}, groups{i,2}, '-o', ...
-         'Color', colors(i,:), ...
-         'LineWidth', 1.5, ...
-         'MarkerSize', 4, ...
-         'MarkerFaceColor', colors(i,:), ...
-         'DisplayName', groups{i,3});
-end
- 
+plot(Temperature_10, Complex_Viscosity_10, 'k-o', 'LineWidth', 1.5, 'Color', [0.5 0.5 0.5], ...
+     'MarkerSize', 4, 'MarkerFaceColor', [0.5 0.5 0.5], 'DisplayName', '|\eta*| GelMA a 10%');
+
+hold on;
+plot(Temperature_12, Complex_Viscosity_12, 'k-o', 'LineWidth', 1.5, 'Color', [0.75 0.75 0.75], ...
+     'MarkerSize', 4, 'MarkerFaceColor', [0.75 0.75 0.75], 'DisplayName', '|\eta*| GelMA a 12.5%');
+
 xlabel('Temperature (°C)', 'FontSize', 13, 'FontWeight', 'bold');
-ylabel('|\eta*| (mPa·s)',   'FontSize', 13, 'FontWeight', 'bold');
-title('Complex Viscosity vs Temperature', 'FontSize', 15, 'FontWeight', 'bold');
- 
+ylabel('Viscosity (mPa·s)', 'FontSize', 13, 'FontWeight', 'bold');
+title("Complex Viscosity vs Temperature", 'FontSize', 15, 'FontWeight', 'bold');
+
 legend('show', 'Location', 'best', 'FontSize', 11);
 set(gca, 'YScale', 'log');
 grid on;
 box on;
 set(gca, 'FontSize', 11);
- 
 
-%% Interpolar i filtrar soroll < 25°C
-function [T, eta] = process_group(r1, r2)
-    T_ref = r1.Temperature;
-    eta1  = r1.Complex_Viscosity;
-    [T2_unique, idx] = unique(r2.Temperature);
-    eta2  = interp1(T2_unique, r2.Complex_Viscosity(idx), T_ref, 'linear', NaN);
-    eta_mean = mean([eta1, eta2], 2, 'omitnan');
-    data = sortrows([T_ref, eta_mean], 1);
-    data = data(data(:,1) < 25, :);
-    T   = data(:,1);
-    eta = data(:,2);
-end
 
