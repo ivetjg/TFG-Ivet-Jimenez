@@ -1,1 +1,4 @@
-
+G91
+G91 U0 ; Posicionament inicial
+G1 U4 F2 ; Formació del tub
+G1 U2 F2 ; Postcurat
