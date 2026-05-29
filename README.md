@@ -16,6 +16,8 @@ Aquest repositori conté tots els codis desenvolupats i utilitzats durant el Tre
 * complex_viscosity.m: Viscositat complexa GelMA (7.5%, 10%, 12.5%) vs temperatura
 * complex_viscosity_PVA.m: Viscositat complexa GelMA 10% amb PVA (0%, 2.5%, 5%, 7.5%)
 * cell_viability.m: Anàlisi dels resultats dels assajos MTT
+* estadistica.m: ANOVA i post-hoc de Tukey per a l'àrea normalitzada en funció de les condicions experimentals i el temps d'exposició UV
+* G-Code bioimpressió tubular: Seqüència de control per a la bioimpressió i postcurat del model vascular tubular
 
 # Requisits
 * MATLAB R2021a o superior (es recomana R2022b+)
